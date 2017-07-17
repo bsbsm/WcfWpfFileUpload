@@ -21,8 +21,9 @@ namespace WpfClient.ViewModels
             LastPageCommand = new RelayCommand(param => this.GetLastPage(), param => CanSwitchPage);
             FindCommand = new RelayCommand(param => this.Find());
             
+            //Тест
             //TotalResultsCount = 319;
-            Results = new ObservableCollection<FileRowModel> { new FileRowModel { RowNumber = 2, RowText = "gecn" }, new FileRowModel { RowNumber = 1, RowText = "gecn" }, new FileRowModel { RowNumber = 89, RowText = "gecn" } };         
+            //Results = new ObservableCollection<FileRowModel> { new FileRowModel { RowNumber = 2, RowText = "Тест1" }, new FileRowModel { RowNumber = 1, RowText = "Текст2" }, new FileRowModel { RowNumber = 89, RowText = "Строка3" } };         
         }
 
         #region Page Commands

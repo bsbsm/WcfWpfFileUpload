@@ -9,11 +9,11 @@
       Title="UploadPage">
 
     <Grid>
-        <ProgressBar Minimum="{Binding Path=ProgressMin}" Maximum="{Binding Path=ProgressMax}" Value="{Binding Path=ProgressValue}" HorizontalAlignment="Left" Height="10" Margin="10,93,0,0" VerticalAlignment="Top" Width="176"/>
-        <TextBox x:Name="filePath" HorizontalAlignment="Left" Height="20" Margin="10,50,0,0" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Path=FilePath}" VerticalAlignment="Top" Width="176"/>
-        <Button x:Name="openFileButton" Content="Открыть файл" Command="{Binding Path=OpenCommand}" HorizontalAlignment="Left" Margin="205,50,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button x:Name="uploadFileButton" Content="Загрузить" Command="{Binding Path=UploadCommand}" HorizontalAlignment="Left" Margin="205,89,0,0" VerticalAlignment="Top" Width="80"/>
+        <ProgressBar Minimum="{Binding Path=ProgressMin}" Maximum="{Binding Path=ProgressMax}" Value="{Binding Path=ProgressValue}" HorizontalAlignment="Left" Height="10" Margin="53,95,0,0" VerticalAlignment="Top" Width="176"/>
+        <TextBox x:Name="filePath" HorizontalAlignment="Left" Height="20" Margin="53,50,0,0" IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Path=FilePath}" VerticalAlignment="Top" Width="176"/>
+        <Button x:Name="openFileButton" Content="Открыть файл" Command="{Binding Path=OpenCommand}" HorizontalAlignment="Left" Margin="256,50,0,0" VerticalAlignment="Top" Width="80"/>
+        <Button x:Name="uploadFileButton" Content="Загрузить" Command="{Binding Path=UploadCommand}" HorizontalAlignment="Left" Margin="256,89,0,0" VerticalAlignment="Top" Width="80"/>
         <Label x:Name="label" Content="{Binding Path=UploadInformation}" HorizontalAlignment="Left" Margin="93,131,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="cancelButton" Content="Отмена" Command="{Binding Path=CancelCommand}" HorizontalAlignment="Left" Margin="308,89,0,0" VerticalAlignment="Top" Width="80"/>
+        <Button x:Name="cancelButton" Content="Отмена" Command="{Binding Path=CancelCommand}" HorizontalAlignment="Left" Margin="358,89,0,0" VerticalAlignment="Top" Width="80"/>
     </Grid>
 </Page>
