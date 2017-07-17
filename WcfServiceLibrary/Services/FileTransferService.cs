@@ -15,8 +15,11 @@ namespace WcfServiceLibrary.Services
     {
         byte[] buffer;
         System.IO.MemoryStream memoryStream;
+
         IUploadProgressService callBack = null;
+
         readonly IFileDatabaseRepository repo;
+
         CancellationTokenSource cancelSource;
 
         public FileTransferService()
@@ -67,22 +70,24 @@ namespace WcfServiceLibrary.Services
                     }
                     while (true);
 
-                    var saved = repo.SaveFile(memoryStream);
+                    
                 }
                 catch (TaskCanceledException)
                 {
                     //Вызов при отмене операции
                     callBack.SendProgress(-1);
                 }
-                finally
-                {
-                    buffer = null;
-                    memoryStream.Close();
-                }
+                //finally
+                //{
+                //    buffer = null;
+                //    memoryStream.Close();
+                //}
             },
             cancelToken);
 
             await task.ConfigureAwait(false);
+
+            var saved = repo.SaveFile(memoryStream);
         }
 
         public void CancelUploadOperation(bool operationIsCanceled)

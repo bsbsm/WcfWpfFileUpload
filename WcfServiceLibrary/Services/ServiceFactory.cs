@@ -8,6 +8,10 @@ using WcfServiceLibrary.Repositories;
 
 namespace WcfServiceLibrary.Services
 {
+    /// <summary>
+    /// Как альтернатива Castle.Windsor, но ServiceHost не создавался при передаче экземпляра сервиса (если класс не имеет конструктора по умолчанию). 
+    /// Сейчас фабрика не используется.
+    /// </summary>
     public static class ServiceFactory
     {
         public static IFileTransferService GetFileTranserService()

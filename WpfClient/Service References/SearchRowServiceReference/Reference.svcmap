@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="64af80b3-4958-4a0b-93aa-44f69b7e1225" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="7f81304f-c90b-40d7-9a42-2dd483b3f9fa" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,10 +22,10 @@
     <MetadataSource Address="net.tcp://localhost:8734/SearchRow/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="3c6632a4-c9e5-4d25-bcae-be80e0392fda" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="ba197344-67d8-4d39-bd40-cb0e508b8eac" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="07e90268-3ea3-4cb5-a145-6bceaf79c7da" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
-    <MetadataFile FileName="WcfServiceLibrary.Contracts.xsd" MetadataType="Schema" ID="90d3993e-b0bd-4530-a383-fd5c4eeac2f3" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="d943045c-0965-4afe-8c46-eb9033aa720c" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="1bd9c4a9-40cf-4fb7-bc90-ed2e8fd1d94b" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="ecf42cf0-8b31-441d-b3a9-220e6abc7696" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
+    <MetadataFile FileName="WcfServiceLibrary.Contracts.xsd" MetadataType="Schema" ID="5ba17393-f1fb-4325-87f6-95c5841c8621" SourceId="1" SourceUrl="net.tcp://localhost:8734/SearchRow/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

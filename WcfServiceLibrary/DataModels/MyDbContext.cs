@@ -11,7 +11,7 @@ namespace WcfServiceLibrary.DataModels
     {
         public MyDbContext() : base ("MyDatabase")
         {
-            Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+            //Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

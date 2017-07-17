@@ -9,7 +9,7 @@ using WcfServiceLibrary.DataModels;
 
 namespace WcfServiceLibrary.Repositories
 {
-    
+
     public class FileDatabaseRepository : IFileDatabaseRepository
     {
         private MyDbContext db;
@@ -20,10 +20,10 @@ namespace WcfServiceLibrary.Repositories
         }
 
         /// <summary>
-        /// 
+        /// Возвращает результат поиска в виде объекта для передачи
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="page"></param>
+        /// <param name="query">Строка поиска</param>
+        /// <param name="page">Необходимая страница</param>
         /// <returns></returns>
         public SearchResultDto SearchRow(string query, int page)
         {
@@ -49,7 +49,7 @@ namespace WcfServiceLibrary.Repositories
                 {
                     ResultsOnPage = searchResult,
                     ResultsCount = recordsCount,
-                    CorrentPage = page,
+                    CurrentPage = page,
                     PagesCount = (int)Math.Ceiling((double)recordsCount / pageSize)
                 };
 
@@ -62,35 +62,43 @@ namespace WcfServiceLibrary.Repositories
         }
 
         /// <summary>
-        /// 
+        /// Возвращает результат, получилось ли сохранить файл в бд. 
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="file">Поток для сохранения в бд</param>
         /// <returns></returns>
         public bool SaveFile(Stream file)
         {
-
             if (file != null)
             {
                 var fileLines = GetFileLines(file);
 
-                if(fileLines.Any())
+                if (fileLines.Any())
                 {
                     var recordsForSave = GetFileRowsForSave(fileLines);
 
-                    if(recordsForSave.Any())
+                    if (recordsForSave.Any())
                     {
-                        //try
-                        //{                      
 
-                        //Deadlock
+                        //try
+                        //{     
+                                         
+                        //строки не сохраняются
                         //INSERT[dbo].[FileRows]([Number], [Text])
                         //VALUES(@0, @1)
                         //SELECT[Id]
                         //FROM[dbo].[FileRows]
                         //WHERE @@ROWCOUNT > 0 AND[Id] = scope_identity()
 
-                        db.FileRows.AddRange(recordsForSave);
-                        db.SaveChanges();
+                        using (var transaction = db.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+
+                            db.FileRows.AddRange(recordsForSave);
+
+                            db.SaveChanges();
+
+                            transaction.Commit();
+                        }
+
 
                         //}
                         //catch
@@ -98,18 +106,18 @@ namespace WcfServiceLibrary.Repositories
                         //    return false;
                         //}
 
-                        return true;                     
+                        return true;
                     }
-                }               
+                }
             }
 
             return false;
         }
 
         /// <summary>
-        /// 
+        /// Возвращает коллекцию строк (string) из потока
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="file">Поток, строки которого необходимо вернуть</param>
         /// <returns></returns>
         private IList<string> GetFileLines(Stream file)
         {
@@ -141,13 +149,13 @@ namespace WcfServiceLibrary.Repositories
         }
 
         /// <summary>
-        /// 
+        /// Возвращает коллекцию объектов таблицы FileRows для сохранения 
         /// </summary>
-        /// <param name="fileLines"></param>
+        /// <param name="fileLines">Строки из файла для сохранения</param>
         /// <returns></returns>
         private IEnumerable<FileRow> GetFileRowsForSave(IList<string> fileLines)
         {
-            var rowsForSave = new List<FileRow>(); 
+            var rowsForSave = new List<FileRow>();
 
             if (fileLines != null)
             {
@@ -157,22 +165,22 @@ namespace WcfServiceLibrary.Repositories
                     {
                         rowsForSave.Add(GetNewFileRowRecord(i + 1, fileLines[i]));
                     }
-                    catch(ArgumentNullException)
+                    catch (ArgumentNullException)
                     {
                         continue;
                     }
-                    
+
                 }
             }
 
-            return rowsForSave;            
+            return rowsForSave;
         }
 
         /// <summary>
-        /// 
+        /// Возвращает новый объект таблицы FileRows
         /// </summary>
-        /// <param name="number"></param>
-        /// <param name="text"></param>
+        /// <param name="number">Номер строки в файле</param>
+        /// <param name="text">Текст строки</param>
         /// <returns></returns>
         private FileRow GetNewFileRowRecord(int number, string text)
         {
@@ -183,7 +191,7 @@ namespace WcfServiceLibrary.Repositories
         }
 
         /// <summary>
-        /// 
+        /// Возвращает запрос на выборку данных из таблицы FileRows без отслеживания изменений, которой можно достраивать
         /// </summary>
         /// <returns></returns>
         private IQueryable<FileRow> GetFileRowsNoTrackingQuery()

@@ -1,18 +1,28 @@
-﻿<Page x:Class="WpfClient.Views.SearchPage"
+﻿<Page
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfClient.Views"
+      xmlns:ViewModels="clr-namespace:WpfClient.ViewModels" x:Class="WpfClient.Views.SearchPage"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="500"
-      Title="SearchPage">
+      Title="SearchPage"
+      x:Name="Search" DataContext="">
 
     <Grid>
-        <TextBox x:Name="searchTextBox" Text="{Binding Path=SearchQuery}" HorizontalAlignment="Left" Height="23" Margin="35,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="300" ToolTip="Введите текст для поиска"/>
-        <Button x:Name="searchButton" Command="{Binding Path=FindCommand}" Content="Найти" HorizontalAlignment="Left" Margin="360,10,0,0" VerticalAlignment="Top" Width="75" Height="23"/>
+        <TextBox x:Name="searchTextBox" Text="{Binding Path=SearchText}" HorizontalAlignment="Left" Height="23" Margin="35,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="300" ToolTip="Введите текст для поиска"/>
+        <Button x:Name="searchButton" Command="{Binding Path=FindCommand}" Content="Найти" HorizontalAlignment="Left" Margin="360,10,0,0" VerticalAlignment="Top" Width="75" Height="23">
+            <Button.DataContext>
+                <ViewModels:SearchViewModel/>
+            </Button.DataContext>
+        </Button>
+        <Grid Margin="10,35,0,0" HorizontalAlignment="Left" Width="177" Height="15" VerticalAlignment="Top" >
+            <TextBlock Text="Всего записей: " HorizontalAlignment="Left" Width="177"/>
+            <TextBlock Margin="80,0,0,0" Text="{Binding Path=TotalResultsCount}" RenderTransformOrigin="0.5,0.5"/>
+        </Grid>
 
-        <ItemsControl Name="ResultItems" ItemsSource="{Binding Results}" Margin="35,59,47,45">
+        <ItemsControl x:Name="ResultItems" ItemsSource="{Binding Path=Results}" Margin="35,50,20,35">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,0,0,30">
@@ -20,16 +30,42 @@
                             <ColumnDefinition Width="40"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="{Binding RowNumber}" Grid.Column="0"></Label>
-                        <Label Content="{Binding RowText}" Grid.Column="1"></Label>
+                        <Label Content="{Binding RowNumber}" Grid.Column="0"/>
+                        <Label Content="{Binding RowText}" Grid.Column="1"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Grid >
-            <Button x:Name="nextPageButton" Command="{Binding ElementName=nextPageButton, Path=DataContext.NextPageCommand}" Content="След стр" HorizontalAlignment="Left" Margin="296,240,0,0" VerticalAlignment="Top" Width="76"/>
-            <Button x:Name="previousPageButton" Command="{Binding ElementName=previousPageButton, Path=DataContext.PreviousPageCommand}" Content="Пред стр" HorizontalAlignment="Left" Margin="41,240,0,0" VerticalAlignment="Top" Width="76"/>
-        </Grid>
+
+        <StackPanel Width="Auto" Height="20"
+        Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,270,0,10">
+            <Button                
+            Margin="4,0"
+            Content="&lt;&lt;"
+            Command="{Binding Path=FirstPageCommand}"/>
+            <Button
+            Margin="4,0"
+            Content="&lt;"
+            Command="{Binding Path=PreviousPageCommand}"/>
+            <StackPanel
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+                <TextBlock
+                Text="{Binding Path=CurrentPage}"/>
+                <TextBlock
+                Text=" страница из "/>
+                <TextBlock
+                Text="{Binding Path=TotalPagesCount}"/>
+            </StackPanel>
+            <Button
+            Margin="4,0"
+            Content="&gt;"
+            Command="{Binding Path=NextPageCommand}"/>
+            <Button
+            Margin="4,0"
+            Content="&gt;&gt;"
+            Command="{Binding Path=LastPageCommand}"/>
+        </StackPanel>
 
     </Grid>
 </Page>

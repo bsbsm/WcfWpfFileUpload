@@ -20,10 +20,13 @@ namespace WcfServiceLibrary.Contracts
     {
         [DataMember]
         public int ResultsCount { get; set; }
+
         [DataMember]
         public IEnumerable<FileRowModel> ResultsOnPage { get; set; }
+
         [DataMember]
-        public int CorrentPage { get; set; }
+        public int CurrentPage { get; set; }
+
         [DataMember]
         public int PagesCount { get; set; }
     }
@@ -33,6 +36,7 @@ namespace WcfServiceLibrary.Contracts
     {
         [DataMember]
         public int RowNumber { get; set; }
+
         [DataMember]
         public string RowText { get; set; }
     }

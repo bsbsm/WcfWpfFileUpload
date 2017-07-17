@@ -24,7 +24,8 @@ namespace WpfClient.Views
         {
             InitializeComponent();
 
-            MainFrame.Content = new UploadPage { DataContext = new UploadViewModel() };
+            //MainFrame.Content = new UploadPage { DataContext = new UploadViewModel() };
+            MainFrame.Content = new SearchPage { DataContext = new SearchViewModel() }; 
         }
 
         private void menuUpload_Click(object sender, RoutedEventArgs e)
@@ -34,8 +35,8 @@ namespace WpfClient.Views
 
         private void menuSearchText_Click(object sender, RoutedEventArgs e)
         {
-            var page = new SearchPage { DataContext = new SearchViewModel() };
-            MainFrame.Content = page;
+            //var page = 
+            MainFrame.Content = new SearchPage { DataContext = new SearchViewModel() }; 
 
             //this.Width = page.Width;
             //this.Height = page.Height + MenuBar.Height;

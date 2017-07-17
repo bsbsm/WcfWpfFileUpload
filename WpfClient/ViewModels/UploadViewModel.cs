@@ -12,7 +12,6 @@ namespace WpfClient.ViewModels
 {
     public class UploadViewModel : ViewModelBase, IFileTransferServiceCallback
     {
-        //backgroungworker
         private string _filePath;
         public string FilePath
         {

@@ -13,9 +13,10 @@ namespace WcfServiceLibrary.Contracts
     public interface IFileTransferService
     {
         [OperationContract(IsOneWay = true)]
-        //Task<string> UploadFile(UploadFileInfo file);
+
         void UploadFile(UploadFileInfo file);
         [OperationContract(IsOneWay = true)]
+
         void CancelUploadOperation(bool operationIsCanceled);
     }
 
@@ -40,6 +41,7 @@ namespace WcfServiceLibrary.Contracts
             if(FileStream != null)
             {
                 FileStream.Close();
+
                 FileStream = null;
             }
         }

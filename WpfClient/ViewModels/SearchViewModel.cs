@@ -13,7 +13,27 @@ namespace WpfClient.ViewModels
     {
         public ObservableCollection<FileRowModel> Results { get; set; }
 
+        public SearchViewModel()
+        {
+            NextPageCommand = new RelayCommand(param => this.GetNextPage(), param => CanSwitchPage);
+            PreviousPageCommand = new RelayCommand(param => this.GetPreviousPage(), param => CanSwitchPage);
+            FirstPageCommand = new RelayCommand(param => this.GetFirstPage(), param => CanSwitchPage);
+            LastPageCommand = new RelayCommand(param => this.GetLastPage(), param => CanSwitchPage);
+            FindCommand = new RelayCommand(param => this.Find());
+            
+            //TotalResultsCount = 319;
+            Results = new ObservableCollection<FileRowModel> { new FileRowModel { RowNumber = 2, RowText = "gecn" }, new FileRowModel { RowNumber = 1, RowText = "gecn" }, new FileRowModel { RowNumber = 89, RowText = "gecn" } };         
+        }
+
+        #region Page Commands
+
+        #region Page properties
+        private int _desiredPage;
+
+        public int PreviousPage { get; set; }
+
         private int _currentPage;
+
         public int CurrentPage
         {
             get
@@ -26,24 +46,6 @@ namespace WpfClient.ViewModels
                 {
                     _currentPage = value;
                     OnPropertyChanged("CurrentPage");
-                }
-            }
-        }
-        public int PreviousPage { get; set; }
-
-        private int _totalResultsCount;
-        public int TotalResultsCount
-        {
-            get
-            {
-                return _totalResultsCount;
-            }
-            set
-            {
-                if (_totalResultsCount != value)
-                {
-                    _totalResultsCount = value;
-                    OnPropertyChanged("TotalResultsCount");
                 }
             }
         }
@@ -64,46 +66,29 @@ namespace WpfClient.ViewModels
                 }
             }
         }
+        #endregion //Page properties
 
-        private int _desiredPage;
+        public ICommand NextPageCommand { get; set; }
+        public ICommand PreviousPageCommand { get; set; }
+        public ICommand FirstPageCommand { get; set; }
+        public ICommand LastPageCommand { get; set; }
 
-        private string _searchText;
-        public string SearchText
+        private bool CanSwitchPage
         {
             get
             {
-                return _searchText;
-            }
+                var canExecute = (Results != null && Results.Any())
+                                 && TotalPagesCount > 1;
 
-            set
-            {
-                if(_searchText != value)
-                {
-                    _searchText = value;
-                    OnPropertyChanged("SearchQuery");
-                }
+                return canExecute;
             }
         }
-
-        private string _searchQueryBuffer;
-
-        public ICommand NextPageCommand;
-        public ICommand PreviousPageCommand;
-        public ICommand FindCommand;
-
-        public SearchViewModel()
-        {
-            Results = new ObservableCollection<FileRowModel> { new FileRowModel { RowNumber = 2, RowText = "gecn" }, new FileRowModel { RowNumber = 1, RowText = "gecn" } , new FileRowModel { RowNumber = 89, RowText = "gecn" } };
-            NextPageCommand = new RelayCommand(param => this.GetNextPage());
-            PreviousPageCommand = new RelayCommand(param => this.GetPreviousPage());
-            FindCommand = new RelayCommand(param => this.Find());
-        }
-
+    
         private void GetNextPage()
         {
             PreviousPage = CurrentPage;
             _desiredPage = ++CurrentPage;
-
+        
             SendSearchRequest(_desiredPage);
         }
 
@@ -115,14 +100,76 @@ namespace WpfClient.ViewModels
             SendSearchRequest(_desiredPage);
         }
 
-        private void Find()
+        private void GetFirstPage()
         {
-            _searchQueryBuffer = SearchText;
+            _desiredPage = 1;
+            PreviousPage = CurrentPage;
 
-            SendSearchRequest(_desiredPage, SearchText);
+            SendSearchRequest(_desiredPage);
         }
 
-        private async void SendSearchRequest(int page, string query = null)
+        private void GetLastPage()
+        {
+            _desiredPage = TotalPagesCount;
+            PreviousPage = CurrentPage;
+
+            //Results.Add(new FileRowModel { RowNumber = 310, RowText = "Added" });
+            //TotalResultsCount = Results.Count;
+
+            SendSearchRequest(_desiredPage);
+        }
+        #endregion //Page Commands
+
+        #region Find Command
+
+        #region Search properties
+        private string _searchText;
+
+        public string SearchText
+        {
+            get
+            {
+                return _searchText;
+            }
+
+            set
+            {
+                if (_searchText != value)
+                {
+                    _searchText = value;
+                    OnPropertyChanged("SearchText");
+                }
+            }
+        }
+
+        private int _totalResultsCount;
+        public int TotalResultsCount
+        {
+            get
+            {
+                return _totalResultsCount;
+            }
+            set
+            {
+                if (_totalResultsCount != value)
+                {
+                    _totalResultsCount = value;
+                    OnPropertyChanged("TotalResultsCount");
+                }
+            }
+        }
+        #endregion //Search properties
+
+        public ICommand FindCommand { get; set; }
+
+        private void Find()
+        {
+            SendSearchRequest();
+        }
+
+        private SearchRowServiceReference.ISearchRowService channel;
+
+        private async void SendSearchRequest(int page = 1, string query = null)
         {
             string _query;
 
@@ -132,21 +179,26 @@ namespace WpfClient.ViewModels
             }
             else
             {
-                if (!String.IsNullOrEmpty(_searchQueryBuffer))
-                    _query = _searchQueryBuffer;
+                if (!String.IsNullOrEmpty(SearchText))
+                    _query = SearchText;
                 else
                     return;              
             }
 
-            var srClient = new SearchRowServiceReference.SearchRowServiceClient();
-            var chanel = srClient.ChannelFactory.CreateChannel();
+            if(channel == null)
+            {
+                var srClient = new SearchRowServiceReference.SearchRowServiceClient();
 
-            var searchResult = await chanel.SearchRowAsync(_query, page);
+                channel = srClient.ChannelFactory.CreateChannel();
+            }          
+
+            var searchResult = await channel.SearchRowAsync(_query, page);
 
             Results = new ObservableCollection<FileRowModel>(searchResult.ResultsOnPage);
-            CurrentPage = searchResult.CorrentPage;
+            CurrentPage = searchResult.CurrentPage;
             TotalResultsCount = searchResult.ResultsCount;
-            TotalPagesCount = searchResult.ResultsCount;
+            TotalPagesCount = searchResult.ResultsCount;          
         }
+        #endregion //Find Command
     }
 }

@@ -19,29 +19,24 @@ namespace WindowsService
 {
     public partial class WindowsServiceHost : ServiceBase
     {
-        IWindsorContainer _container;
+        //IWindsorContainer _container;
 
         internal static ServiceHost hostFileTransfer;
         internal static ServiceHost hostSearchRow;
 
         public WindowsServiceHost()
         {
-            _container = new WindsorContainer();
+            //Необходимо загеристрировать фабрику для сервисов
+            //_container = new WindsorContainer();
 
             InitializeComponent();          
         }
 
         protected override void OnStart(string[] args)
         {
-            ConfigureContainer(_container);
+            //ConfigureContainer(_container);
 
             CloseAllHosts();
-
-            //new FileTransferService(new WcfServiceLibrary.Repositories.FileDatabaseRepository()),
-            //    new SearchRowService(new WcfServiceLibrary.Repositories.FileDatabaseRepository())
-
-            //var ftService = ServiceFactory.GetFileTranserService();
-            //var srService = ServiceFactory.GetSearchRowService();
 
             hostFileTransfer = new ServiceHost(typeof(IFileTransferService));
             hostSearchRow = new ServiceHost(typeof(ISearchRowService));

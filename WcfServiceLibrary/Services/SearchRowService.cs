@@ -19,6 +19,7 @@ namespace WcfServiceLibrary.Services
         {
             repo = repository;
         }
+
         public SearchResultDto SearchRow(string query, int page)
         {
             if(String.IsNullOrWhiteSpace(query) && page > 0)
@@ -27,7 +28,7 @@ namespace WcfServiceLibrary.Services
             }
             else
             {
-                throw new Exception("null arguments");            
+                throw new ArgumentNullException("null arguments");            
             }
         }
     }
