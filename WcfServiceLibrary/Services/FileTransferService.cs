@@ -22,39 +22,40 @@ namespace WcfServiceLibrary.Services
         public FileTransferService()
         {
             repo = new FileDatabaseRepository();
+            cancelSource = new CancellationTokenSource();
         }
 
         public FileTransferService(IFileDatabaseRepository repository)
         {
             this.repo = repository;
+            cancelSource = new CancellationTokenSource();
         }
 
         public async void UploadFile(UploadFileInfo file)
         {
-            cancelSource = new CancellationTokenSource();
-
-            if (file.OperationIsCanceled)
-            {                
-                cancelSource.Cancel();
-                var c = cancelSource.IsCancellationRequested;
-            }
+            var cancelToken = cancelSource.Token;
 
             callBack = OperationContext.Current.GetCallbackChannel<IUploadProgressService>();
 
             var task = Task.Factory.StartNew(() =>
             {
-                //try
-                //{
-                    int bufferSize = file.Lenght;
+                try
+                {
+                    int bufferSize = file.Length;
 
                     if (memoryStream == null)
                     {
                         buffer = new byte[bufferSize];
                         memoryStream = new System.IO.MemoryStream(bufferSize);
                     }
-                    Thread.Sleep(10000);
+
                     do
                     {
+                        //Ожидлание для теста отмены задачи
+                        //Thread.Sleep(1000);
+
+                        if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
+
                         var readedBytes = file.FileStream.Read(buffer, 0, bufferSize);
                         if (readedBytes == 0) break;
 
@@ -65,33 +66,31 @@ namespace WcfServiceLibrary.Services
                         callBack.SendProgress(progress);
                     }
                     while (true);
-                 
-                    var saved =  repo.SaveFile(memoryStream);
-                    
+
+                    var saved = repo.SaveFile(memoryStream);
+                }
+                catch (TaskCanceledException)
+                {
+                    //Вызов при отмене операции
+                    callBack.SendProgress(-1);
+                }
+                finally
+                {
                     buffer = null;
                     memoryStream.Close();
-
-                //}
-                //catch(Exception e)
-                //{
-                //    var fault = new UploadFault { Message = e.Message };
-                //    //var reason = new FaultReason(e.Message);
-
-                //    //throw new FaultException<UploadFault>(fault);
-                //    return;
-                //}
-                
+                }
             },
-            cancelSource.Token);
-            try
+            cancelToken);
+
+            await task.ConfigureAwait(false);
+        }
+
+        public void CancelUploadOperation(bool operationIsCanceled)
+        {
+            if (operationIsCanceled)
             {
-                await task.ConfigureAwait(false);
+                cancelSource.Cancel();
             }
-            catch (TaskCanceledException)
-            {
-                //Вызов при отмене операции
-                callBack.SendProgress(-1);               
-            }         
         }
     }
 }

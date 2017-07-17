@@ -21,6 +21,12 @@ namespace WpfClient.FileTransferServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IFileTransferService/UploadFile")]
         System.Threading.Tasks.Task UploadFileAsync(WpfClient.FileTransferServiceReference.UploadFileInfo request);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IFileTransferService/CancelUploadOperation")]
+        void CancelUploadOperation(bool operationIsCanceled);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IFileTransferService/CancelUploadOperation")]
+        System.Threading.Tasks.Task CancelUploadOperationAsync(bool operationIsCanceled);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -37,10 +43,7 @@ namespace WpfClient.FileTransferServiceReference {
     public partial class UploadFileInfo {
         
         [System.ServiceModel.MessageHeaderAttribute(Namespace="http://tempuri.org/")]
-        public int Lenght;
-        
-        [System.ServiceModel.MessageHeaderAttribute(Namespace="http://tempuri.org/")]
-        public bool OperationIsCanceled;
+        public int Length;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://tempuri.org/", Order=0)]
         public System.IO.Stream FileStream;
@@ -48,9 +51,8 @@ namespace WpfClient.FileTransferServiceReference {
         public UploadFileInfo() {
         }
         
-        public UploadFileInfo(int Lenght, bool OperationIsCanceled, System.IO.Stream FileStream) {
-            this.Lenght = Lenght;
-            this.OperationIsCanceled = OperationIsCanceled;
+        public UploadFileInfo(int Length, System.IO.Stream FileStream) {
+            this.Length = Length;
             this.FileStream = FileStream;
         }
     }
@@ -88,10 +90,9 @@ namespace WpfClient.FileTransferServiceReference {
             base.Channel.UploadFile(request);
         }
         
-        public void UploadFile(int Lenght, bool OperationIsCanceled, System.IO.Stream FileStream) {
+        public void UploadFile(int Length, System.IO.Stream FileStream) {
             WpfClient.FileTransferServiceReference.UploadFileInfo inValue = new WpfClient.FileTransferServiceReference.UploadFileInfo();
-            inValue.Lenght = Lenght;
-            inValue.OperationIsCanceled = OperationIsCanceled;
+            inValue.Length = Length;
             inValue.FileStream = FileStream;
             ((WpfClient.FileTransferServiceReference.IFileTransferService)(this)).UploadFile(inValue);
         }
@@ -101,12 +102,19 @@ namespace WpfClient.FileTransferServiceReference {
             return base.Channel.UploadFileAsync(request);
         }
         
-        public System.Threading.Tasks.Task UploadFileAsync(int Lenght, bool OperationIsCanceled, System.IO.Stream FileStream) {
+        public System.Threading.Tasks.Task UploadFileAsync(int Length, System.IO.Stream FileStream) {
             WpfClient.FileTransferServiceReference.UploadFileInfo inValue = new WpfClient.FileTransferServiceReference.UploadFileInfo();
-            inValue.Lenght = Lenght;
-            inValue.OperationIsCanceled = OperationIsCanceled;
+            inValue.Length = Length;
             inValue.FileStream = FileStream;
             return ((WpfClient.FileTransferServiceReference.IFileTransferService)(this)).UploadFileAsync(inValue);
+        }
+        
+        public void CancelUploadOperation(bool operationIsCanceled) {
+            base.Channel.CancelUploadOperation(operationIsCanceled);
+        }
+        
+        public System.Threading.Tasks.Task CancelUploadOperationAsync(bool operationIsCanceled) {
+            return base.Channel.CancelUploadOperationAsync(operationIsCanceled);
         }
     }
 }

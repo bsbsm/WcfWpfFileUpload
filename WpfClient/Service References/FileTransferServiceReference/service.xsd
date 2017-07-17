@@ -8,8 +8,14 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Lenght" type="xs:int" />
-  <xs:element name="OperationIsCanceled" type="xs:boolean" />
+  <xs:element name="Length" type="xs:int" />
+  <xs:element name="CancelUploadOperation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="operationIsCanceled" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="SendProgress">
     <xs:complexType>
       <xs:sequence>

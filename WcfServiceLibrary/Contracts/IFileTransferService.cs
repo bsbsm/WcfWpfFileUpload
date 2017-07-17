@@ -15,6 +15,8 @@ namespace WcfServiceLibrary.Contracts
         [OperationContract(IsOneWay = true)]
         //Task<string> UploadFile(UploadFileInfo file);
         void UploadFile(UploadFileInfo file);
+        [OperationContract(IsOneWay = true)]
+        void CancelUploadOperation(bool operationIsCanceled);
     }
 
     [DataContract]
@@ -28,10 +30,7 @@ namespace WcfServiceLibrary.Contracts
     public class UploadFileInfo
     {
         [MessageHeader]
-        public int Lenght;
-
-        [MessageHeader]
-        public bool OperationIsCanceled;
+        public int Length;
 
         [MessageBodyMember(Order = 1)]
         public System.IO.Stream FileStream;

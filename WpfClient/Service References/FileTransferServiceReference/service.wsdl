@@ -44,8 +44,10 @@
     <wsdl:part name="parameters" element="tns:UploadFileInfo" />
   </wsdl:message>
   <wsdl:message name="UploadFileInfo_Headers">
-    <wsdl:part name="Lenght" element="tns:Lenght" />
-    <wsdl:part name="OperationIsCanceled" element="tns:OperationIsCanceled" />
+    <wsdl:part name="Length" element="tns:Length" />
+  </wsdl:message>
+  <wsdl:message name="IFileTransferService_CancelUploadOperation_InputMessage">
+    <wsdl:part name="parameters" element="tns:CancelUploadOperation" />
   </wsdl:message>
   <wsdl:message name="IFileTransferService_SendProgress_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:SendProgress" />
@@ -53,6 +55,9 @@
   <wsdl:portType msc:usingSession="true" name="IFileTransferService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UploadFile">
       <wsdl:input wsaw:Action="http://tempuri.org/IFileTransferService/UploadFile" name="UploadFileInfo" message="tns:UploadFileInfo" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CancelUploadOperation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileTransferService/CancelUploadOperation" message="tns:IFileTransferService_CancelUploadOperation_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SendProgress">
       <wsdl:output wsaw:Action="http://tempuri.org/IFileTransferService/SendProgress" message="tns:IFileTransferService_SendProgress_OutputCallbackMessage" />
@@ -65,8 +70,13 @@
     <wsdl:operation name="UploadFile">
       <soap12:operation soapAction="http://tempuri.org/IFileTransferService/UploadFile" style="document" />
       <wsdl:input name="UploadFileInfo">
-        <soap12:header message="tns:UploadFileInfo_Headers" part="Lenght" use="literal" />
-        <soap12:header message="tns:UploadFileInfo_Headers" part="OperationIsCanceled" use="literal" />
+        <soap12:header message="tns:UploadFileInfo_Headers" part="Length" use="literal" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="CancelUploadOperation">
+      <soap12:operation soapAction="http://tempuri.org/IFileTransferService/CancelUploadOperation" style="document" />
+      <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>

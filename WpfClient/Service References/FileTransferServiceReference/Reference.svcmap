@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a79b0370-bc5d-4d10-b3ba-96f529eafb24" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="1b920ddd-2710-43fa-9f18-867b3d3009b8" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,10 +22,10 @@
     <MetadataSource Address="net.tcp://localhost:8733/FileTransfer/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="1879dce8-4620-47df-affb-e57ecaa3e06e" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
-    <MetadataFile FileName="Message.xsd" MetadataType="Schema" ID="72234a8e-1d20-4d7a-bdfa-3be8aac7520e" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="b6366e5e-b864-45a9-b56d-8615786acc27" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="ab5c185d-a3b7-4a09-a072-ceb173ddd38f" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="520cbdf3-6b88-4c8d-869b-f1e0a233c696" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
+    <MetadataFile FileName="Message.xsd" MetadataType="Schema" ID="928789d8-765a-4ea9-b109-30306ca0cbfc" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="d09152bd-c2fd-47a1-b3ac-c67653115830" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="2c8f468c-8382-4114-a0c7-445ab2df0409" SourceId="1" SourceUrl="net.tcp://localhost:8733/FileTransfer/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

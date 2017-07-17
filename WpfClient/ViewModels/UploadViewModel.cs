@@ -155,8 +155,7 @@ namespace WpfClient.ViewModels
         {
             var fileInfo = new UploadFileInfo();
             fileInfo.FileStream = stream;
-            fileInfo.Lenght = (int)stream.Length;
-            fileInfo.OperationIsCanceled = UploadIsCanceled;
+            fileInfo.Length = (int)stream.Length;
 
             return fileInfo;
         }
@@ -194,8 +193,10 @@ namespace WpfClient.ViewModels
         {
             UploadIsCanceled = true;
 
-            SendRequest();
-
+            if(channel != null)
+            {
+                channel.CancelUploadOperation(UploadIsCanceled);
+            }          
         }
     }
 }
