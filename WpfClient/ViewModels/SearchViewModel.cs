@@ -11,16 +11,31 @@ namespace WpfClient.ViewModels
 {
     public class SearchViewModel : ViewModelBase
     {
-        public ObservableCollection<FileRowModel> Results { get; set; }
+        private ObservableCollection<FileRowModel> _results;
+        public ObservableCollection<FileRowModel> Results
+        {
+            get
+            {
+                return _results;
+            }
+            set
+            {
+                if (_results != value)
+                {
+                    _results = value;
+                    OnPropertyChanged("Results");
+                }
+            }
+        }
 
         public SearchViewModel()
         {
-            NextPageCommand = new RelayCommand(param => this.GetNextPage(), param => CanSwitchPage);
-            PreviousPageCommand = new RelayCommand(param => this.GetPreviousPage(), param => CanSwitchPage);
-            FirstPageCommand = new RelayCommand(param => this.GetFirstPage(), param => CanSwitchPage);
-            LastPageCommand = new RelayCommand(param => this.GetLastPage(), param => CanSwitchPage);
+            NextPageCommand = new RelayCommand(param => this.GetNextPage(), param => this.CanSwitchPage());
+            PreviousPageCommand = new RelayCommand(param => this.GetPreviousPage(), param => this.CanSwitchPage());
+            FirstPageCommand = new RelayCommand(param => this.GetFirstPage(), param => this.CanSwitchPage());
+            LastPageCommand = new RelayCommand(param => this.GetLastPage(), param => this.CanSwitchPage());
             FindCommand = new RelayCommand(param => this.Find());
-            
+
             //Тест
             //TotalResultsCount = 319;
             //Results = new ObservableCollection<FileRowModel> { new FileRowModel { RowNumber = 2, RowText = "Тест1" }, new FileRowModel { RowNumber = 1, RowText = "Текст2" }, new FileRowModel { RowNumber = 89, RowText = "Строка3" } };         
@@ -74,22 +89,19 @@ namespace WpfClient.ViewModels
         public ICommand FirstPageCommand { get; set; }
         public ICommand LastPageCommand { get; set; }
 
-        private bool CanSwitchPage
+        private bool CanSwitchPage()
         {
-            get
-            {
-                var canExecute = (Results != null && Results.Any())
-                                 && TotalPagesCount > 1;
+            var canExecute = (Results != null && Results.Any())
+                             && TotalPagesCount > 1;
 
-                return canExecute;
-            }
+            return canExecute;
         }
-    
+
         private void GetNextPage()
         {
             PreviousPage = CurrentPage;
             _desiredPage = ++CurrentPage;
-        
+
             SendSearchRequest(_desiredPage);
         }
 
@@ -183,22 +195,22 @@ namespace WpfClient.ViewModels
                 if (!String.IsNullOrEmpty(SearchText))
                     _query = SearchText;
                 else
-                    return;              
+                    return;
             }
 
-            if(channel == null)
+            if (channel == null)
             {
                 var srClient = new SearchRowServiceReference.SearchRowServiceClient();
 
                 channel = srClient.ChannelFactory.CreateChannel();
-            }          
+            }
 
             var searchResult = await channel.SearchRowAsync(_query, page);
 
             Results = new ObservableCollection<FileRowModel>(searchResult.ResultsOnPage);
             CurrentPage = searchResult.CurrentPage;
             TotalResultsCount = searchResult.ResultsCount;
-            TotalPagesCount = searchResult.ResultsCount;          
+            TotalPagesCount = searchResult.PagesCount;
         }
         #endregion //Find Command
     }

@@ -22,7 +22,7 @@ namespace WcfServiceLibrary.Services
 
         public SearchResultDto SearchRow(string query, int page)
         {
-            if(String.IsNullOrWhiteSpace(query) && page > 0)
+            if(!String.IsNullOrWhiteSpace(query) && page > 0)
             {
                 return repo.SearchRow(query, page);
             }

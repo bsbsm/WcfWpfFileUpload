@@ -16,7 +16,7 @@ namespace WcfServiceLibrary.Repositories
 
         public FileDatabaseRepository()
         {
-            db = new MyDbContext();
+            //db = new MyDbContext();
         }
 
         /// <summary>
@@ -29,35 +29,42 @@ namespace WcfServiceLibrary.Repositories
         {
             if (page > 0)
             {
-                var records = GetFileRowsNoTrackingQuery().Where(x => x.Text.Contains(query));
+                SearchResultDto result;
 
-                var recordsCount = records.Count();
-
-                var pageSize = 20;
-                var recordsToSkip = pageSize * (page - 1);
-
-                var searchResult = records.OrderBy(x => x.Text)
-                    .Skip(recordsToSkip)
-                    .Take(pageSize)
-                    .Select(x => new FileRowModel
-                    {
-                        RowNumber = x.Number,
-                        RowText = x.Text
-                    });
-
-                SearchResultDto result = new SearchResultDto
+                using (db = new MyDbContext())
                 {
-                    ResultsOnPage = searchResult,
-                    ResultsCount = recordsCount,
-                    CurrentPage = page,
-                    PagesCount = (int)Math.Ceiling((double)recordsCount / pageSize)
-                };
+                    var records = GetFileRowsNoTrackingQuery().Where(x => x.Text.Contains(query));
+
+                    var recordsCount = records.Count();
+
+                    var pageSize = 20;
+                    var recordsToSkip = pageSize * (page - 1);
+
+                    var searchResult = records.OrderBy(x => x.Text)
+                        .Skip(recordsToSkip)
+                        .Take(pageSize)
+                        .OrderBy(x => x.Number)
+                        .Select(x => new FileRowModel
+                        {
+                            RowNumber = x.Number,
+                            RowText = x.Text
+                        })
+                        .ToList();
+
+                    result = new SearchResultDto
+                    {
+                        ResultsOnPage = searchResult,
+                        ResultsCount = recordsCount,
+                        CurrentPage = page,
+                        PagesCount = (int)Math.Ceiling((double)recordsCount / pageSize)
+                    };                   
+                }
 
                 return result;
             }
             else
             {
-                throw new ArgumentOutOfRangeException("page", "Номер страницы должен быть больше нуля");
+                throw new ArgumentOutOfRangeException("page");
             }
         }
 
@@ -81,7 +88,7 @@ namespace WcfServiceLibrary.Repositories
 
                         //try
                         //{     
-                                         
+
                         //строки не сохраняются
                         //INSERT[dbo].[FileRows]([Number], [Text])
                         //VALUES(@0, @1)
@@ -89,15 +96,40 @@ namespace WcfServiceLibrary.Repositories
                         //FROM[dbo].[FileRows]
                         //WHERE @@ROWCOUNT > 0 AND[Id] = scope_identity()
 
-                        using (var transaction = db.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        //using (var transaction = db.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        //{
+                        using (var scope = new System.Transactions.TransactionScope())
                         {
+                            db = null;
+                            try
+                            {
+                                db = new MyDbContext();
+                                db.Configuration.AutoDetectChangesEnabled = false;
 
-                            db.FileRows.AddRange(recordsForSave);
+                                int count = 0;
+                                foreach (var rec in recordsForSave)
+                                {
+                                    ++count;
+                                    db = AddToContext(db, rec, count, 100);
+                                }
 
-                            db.SaveChanges();
+                                db.SaveChanges();
+                            }
+                            finally
+                            {
+                                if (db != null)
+                                    db.Dispose();
+                            }
 
-                            transaction.Commit();
+                            scope.Complete();
                         }
+
+                        //db.FileRows.AddRange(recordsForSave);
+
+                        //db.SaveChanges();
+
+                        // transaction.Commit();
+                        //}
 
 
                         //}
@@ -113,6 +145,23 @@ namespace WcfServiceLibrary.Repositories
 
             return false;
         }
+
+        private MyDbContext AddToContext(MyDbContext context, FileRow entity, int count, int commitCount)
+        {
+            context.FileRows.Add(entity);
+
+            if (count % commitCount == 0)
+            {
+                context.SaveChanges();
+
+                context.Dispose();
+                context = new MyDbContext();
+                context.Configuration.AutoDetectChangesEnabled = false;
+            }
+
+            return context;
+        }
+
 
         /// <summary>
         /// Возвращает коллекцию строк (string) из потока
